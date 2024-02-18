@@ -33,9 +33,9 @@ class MyButton(tk.Button):
 class MineSweeper:
     
     window = tk.Tk()
-    ROW = 7
+    ROW = 10
     COLUMNS = 10
-    MINES = 10
+    MINES = 15
     IS_GAME_OVER = False
     IS_FIRST_CLICK = True
     
@@ -46,9 +46,22 @@ class MineSweeper:
             for j in range(MineSweeper.COLUMNS+2):
                 btn = MyButton(MineSweeper.window, x=i, y=j)
                 btn.config(command=lambda button=btn: self.click(button))
+                btn.bind("<Button-3>", self.rigth_click)
                 temp.append(btn)
             self.buttons.append(temp)
-    
+            
+    def rigth_click(self, event):
+        if MineSweeper.IS_GAME_OVER:
+            return
+        cur_btn = event.widget
+        if cur_btn['state'] == 'normal':
+            cur_btn['state'] = 'disabled'
+            cur_btn['text'] = '🚩'
+            cur_btn['disabledforeground'] = 'red'
+        elif cur_btn['text'] == '🚩':
+            cur_btn['text'] = ''
+            cur_btn['state'] = 'normal'
+        
     def click(self, clicked_button: MyButton):
         
         if MineSweeper.IS_GAME_OVER:
