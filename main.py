@@ -1,6 +1,6 @@
 import tkinter as tk
 from random import shuffle
-from tkinter.messagebox import showinfo
+from tkinter.messagebox import showinfo, showerror
 
 colors = {
     1: 'white',
@@ -111,6 +111,38 @@ class MineSweeper:
         self.__init__()
         self.create_widgets()
         MineSweeper.IS_FIRST_CLICK = True
+        MineSweeper.IS_GAME_OVER = False
+    
+    def create_settings_win(self):
+        win_settings = tk.Toplevel(self.window)
+        win_settings.wm_title('Налаштування')
+        tk.Label(win_settings, text='Кількість рядків').grid(row=0, column=0)
+        row_entry = tk.Entry(win_settings)
+        row_entry.insert(0, MineSweeper.ROW)
+        row_entry.grid(row=0, column=1, padx=20, pady=20)
+        tk.Label(win_settings, text='Кількість колонок').grid(row=1, column=0)
+        column_entry = tk.Entry(win_settings)
+        column_entry.insert(0, MineSweeper.COLUMNS)
+        column_entry.grid(row=1, column=1, padx=20, pady=20)
+        tk.Label(win_settings, text='Кількість мін').grid(row=2, column=0)
+        mines_entry = tk.Entry(win_settings)
+        mines_entry.insert(0, MineSweeper.MINES)
+        mines_entry.grid(row=2, column=1, padx=20, pady=20)
+        save_btn = tk.Button(win_settings, text='Примінити',
+                  command=lambda :self.change_settings(row_entry, column_entry, mines_entry))
+        save_btn.grid(row=3, column=0, columnspan=2, padx=20, pady=20)
+        
+    def change_settings(self, row: tk.Entry, column: tk.Entry, mines: tk.Entry):
+        try:
+            int(row.get()), int(column.get()), int(mines.get())
+        except ValueError:
+            showerror('Помилка', 'Ви ввели неправильне значення!')
+            return
+            
+        MineSweeper.ROW = int(row.get())
+        MineSweeper.COLUMNS = int(column.get())
+        MineSweeper.MINES = int(mines.get())
+        self.reload()
         
     def create_widgets(self):
         
@@ -119,7 +151,7 @@ class MineSweeper:
         
         settings_menu = tk.Menu(menubar, tearoff=0)
         settings_menu.add_command(label='Грати', command=self.reload)
-        settings_menu.add_command(label='Налаштування')
+        settings_menu.add_command(label='Налаштування', command=self.create_settings_win)
         settings_menu.add_command(label='Вихід', command=self.window.destroy)
         menubar.add_cascade(label='Файл', menu=settings_menu)
         
