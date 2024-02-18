@@ -1,6 +1,12 @@
 import tkinter as tk
 from random import shuffle
 
+colors = {
+    1: 'blue',
+    2: 'green',
+    3: '#8b10c4',
+}
+
 
 class MyButton(tk.Button):
     
@@ -52,8 +58,13 @@ class MineSweeper:
                 btn = self.buttons[i][j]
                 if btn.is_mine:
                    btn.config(text="*", background='red', disabledforeground='black')
-                else:
-                   btn.config(text=btn.count_bomb, disabledforeground='black')      
+                # elif btn.count_bomb == 1:
+                #     btn.config(text=btn.count_bomb, fg ='blue')
+                # elif btn.count_bomb == 2:
+                #     btn.config(text=btn.count_bomb, fg ='green')   
+                elif btn.count_bomb in colors:
+                   color = colors.get(btn.count_bomb, 'black')
+                   btn.config(text=btn.count_bomb, fg=color)      
     
     def start(self):
         self.create_widgets()
@@ -65,8 +76,14 @@ class MineSweeper:
     
                     
     def print_buttons(self):
-        for row_btn in self.buttons:
-            print(row_btn)
+        for i in range(1, MineSweeper.ROW + 1):
+            for j in range(1, MineSweeper.COLUMNS + 1):
+                btn = self.buttons[i][j]
+                if btn.is_mine:
+                   print('B', end='')
+                else:
+                    print(btn.count_bomb, end='')
+            print()
     
     def insert_mines(self):
         index_mines = self.get_mines_places()
