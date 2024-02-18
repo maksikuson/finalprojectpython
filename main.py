@@ -2,9 +2,15 @@ import tkinter as tk
 from random import shuffle
 
 colors = {
+    1: 'white',
     1: 'blue',
-    2: 'green',
-    3: '#8b10c4',
+    2: '#008200',
+    3: '#FF0000',
+    4: '#000084',
+    5: '#840000',
+    6: '#008284',
+    7: '#840084',
+    8: '#000000',
 }
 
 
@@ -43,8 +49,13 @@ class MineSweeper:
         if clicked_button.is_mine:
             clicked_button.config(text="*", background='red', disabledforeground='black')
         else:
-            clicked_button.config(text=clicked_button.number, disabledforeground='black')
+            color = colors.get(clicked_button.count_bomb, 'black')
+            if clicked_button.count_bomb:
+               clicked_button.config(text=clicked_button.count_bomb, disabledforeground=color) 
+            else:
+                clicked_button.config(text='', disabledforeground=color)
         clicked_button.config(state='disabled')
+        clicked_button.config(relief=tk.SUNKEN)
     
     def create_widgets(self):
         for i in range(1, MineSweeper.ROW + 1):
@@ -57,11 +68,7 @@ class MineSweeper:
             for j in range(MineSweeper.COLUMNS +2):
                 btn = self.buttons[i][j]
                 if btn.is_mine:
-                   btn.config(text="*", background='red', disabledforeground='black')
-                # elif btn.count_bomb == 1:
-                #     btn.config(text=btn.count_bomb, fg ='blue')
-                # elif btn.count_bomb == 2:
-                #     btn.config(text=btn.count_bomb, fg ='green')   
+                   btn.config(text="*", background='red', disabledforeground='black')  
                 elif btn.count_bomb in colors:
                    color = colors.get(btn.count_bomb, 'black')
                    btn.config(text=btn.count_bomb, fg=color)      
@@ -71,7 +78,7 @@ class MineSweeper:
         self.insert_mines()
         self.count_mines_in_buttons()
         self.print_buttons()
-        self.open_all_buttons()
+        # self.open_all_buttons()
         MineSweeper.window.mainloop()
     
                     
