@@ -106,13 +106,19 @@ class MineSweeper:
                                  1 <= next_btn.y <= MineSweeper.COLUMNS and next_btn not in queue:
                             queue.append(next_btn)
     
+    def reload(self):
+        [child.destroy() for child in self.window.winfo_children()]
+        self.__init__()
+        self.create_widgets()
+        MineSweeper.IS_FIRST_CLICK = True
+        
     def create_widgets(self):
         
         menubar = tk.Menu(self.window)
         self.window.config(menu=menubar)
         
         settings_menu = tk.Menu(menubar, tearoff=0)
-        settings_menu.add_command(label='Грати')
+        settings_menu.add_command(label='Грати', command=self.reload)
         settings_menu.add_command(label='Налаштування')
         settings_menu.add_command(label='Вихід', command=self.window.destroy)
         menubar.add_cascade(label='Файл', menu=settings_menu)
@@ -122,9 +128,15 @@ class MineSweeper:
             for j in range(1, MineSweeper.COLUMNS + 1):
                 btn = self.buttons[i][j]
                 btn.number = count
-                btn.grid(row=i, column=j)
+                btn.grid(row=i, column=j, stick='NWES')
                 count += 1
                 
+        for i in range(1, MineSweeper.ROW + 1):        
+            tk.Grid.rowconfigure(self.window, i, weight=1) 
+            
+        for i in range(1, MineSweeper.COLUMNS + 1):        
+            tk.Grid.columnconfigure(self.window, i, weight=1) 
+            
     def open_all_buttons(self):
         for i in range(MineSweeper.ROW + 2):
             for j in range(MineSweeper.COLUMNS +2):
